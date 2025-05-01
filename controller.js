@@ -1,5 +1,5 @@
 
-const { MongoClient } = require("mongodb");
+const { MongoClient, ServerApiVersion } = require("mongodb");
 require("dotenv").config();
 
 // MongoDB connection details
@@ -8,13 +8,27 @@ const databaseName = process.env.DATABASE_NAME;
 const collectionName = process.env.COLLECTION_NAME;
 const hourlyCollectionName = process.env.HOURLY_COLLECTION_NAME;
 
+const client = new MongoClient(uri, {
+    serverApi: ServerApiVersion.v1,
+    tls: true,
+    tlsInsecure: false,
+  });
+
+  async function createMongoClient() {
+    if (!client.isConnected) {
+      await client.connect();
+    }
+    console.log("Connected to MongoDB Atlas");
+    return client;
+  }
+
 // Function to create MongoDB client
-async function createMongoClient() {
-  const client = new MongoClient(uri);
-  await client.connect();
-  console.log("Connected to MongoDB Atlas");
-  return client;
-}
+// async function createMongoClient() {
+//   const client = new MongoClient(uri);
+//   await client.connect();
+//   console.log("Connected to MongoDB Atlas");
+//   return client;
+// }
 
 let handleDNISData = async (req, res) => {
   let client;
